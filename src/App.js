@@ -6,7 +6,6 @@ function App() {
   //BEM
   return (
     <div className="App">
-      <h1>Let's build the Amazon store--> FLoLMB!</h1>
       <Header />
       {/* Home */}
     </div>
