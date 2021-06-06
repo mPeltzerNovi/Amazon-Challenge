@@ -9,7 +9,7 @@ export const initialState = {
 //Reducer
 const reducer = (state, action) => {
 
-    console.log(action);  //alleen action? -->Ja dat was de fout alleen "action" loggen; niet action.type
+    console.log(action);  //alleen action? -->Ja dat was de fout alleen "action" loggen; niet action.type!!!
 
     //zie 2:11:10
     switch (action.type) {
