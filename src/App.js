@@ -4,18 +4,23 @@ import Header from "./Header";
 import Home from "./Home";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Checkout from "./Checkout";
+import Login from "./Login";
 
 function App() {
   //BEM
   return (
       <Router>
         <div className="App">
-            <Header /> {/*Zo blijft de Header altijd staan, welke pagina je bent ook*/}
             <Switch>
+                <Route path="/login">
+                    <Login />
+                </Route>
                 <Route path="/checkout">
+                    <Header />
                     <Checkout />
                 </Route>
                 <Route path="/">
+                    <Header />
                     <Home />
                 </Route>
             </Switch>
