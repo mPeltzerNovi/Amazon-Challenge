@@ -3,7 +3,7 @@
 //De initial state:
 export const initialState = {
     basket: [],
-
+    user: null //4:13:54
 };
 
 //Selector bouwen op prijzen op te tellen -->!!! Belangrijk en veelgebruikt!!!
@@ -42,6 +42,12 @@ const reducer = (state, action) => {
                 ...state,
                 basket: newBasket
             }
+        case "SET_USER":
+            return {
+                ...state,
+                user: action.user
+            }
+
         //Er moet ook nog een default state zijn
         default:
             return state;
