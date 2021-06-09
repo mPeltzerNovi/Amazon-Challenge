@@ -1,11 +1,61 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './Payment.css';
 import {useStateValue} from "./StateProvider";
 import CheckoutProduct from "./CheckoutProduct"; //(dit is de HOOK)
 import { Link } from "react-router-dom";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import CurrencyFormat from "react-currency-format";
+import { getBasketTotal } from "./reducer";
 
 function Payment() {
     const [{ basket, user }, dispatch] = useStateValue()
+
+    //Deze Stripe hooks gebruiken:
+    const stripe = useStripe();
+    const elements = useElements();
+
+    //Benodigde useStates maken
+
+    const [succeeded, setSucceeded] = useState(false);
+    const [processing, setProcessing] = useState("");
+
+    const [error, setError] = useState(null);
+    const [disabled, setDisabled] = useState(true);
+
+    /////
+    const [ClientSecret, setClientSecret] = useState(true); //lastig verhaal dit-->6:15:43
+
+    useEffect(() => {
+        //generate the special stripe secret which allows us to charge a customer
+
+        const getClientSecret = async () => {
+            const response = await axios
+        }
+
+        getClientSecret();
+    }, [basket])
+    ////
+
+    //Hier dan de handleSubmit-functie maken.
+    const handleSubmit = async (event) => {
+        //Do all the Stripe stuff here...
+        event.preventDefault(); //(will stop it from refreshing)
+        setProcessing(true); //knop blokkeert na 1 keer klikken.
+
+
+
+        //const payload = await stripe
+
+
+    }
+
+    //Nu ook de functie handleChange maken
+    const handleChange = event => { //dat steepje door event kwam omdat ik "e" in de arrow-functie had gebruikt.
+        //Listen for changes in the CardElement
+        //and display any errors as the customer types their cart details
+        setDisabled(event.empty);
+        setError(event.error ? event.error.message: "");
+    }
 
     return (
         <div className='payment'>
@@ -50,6 +100,29 @@ function Payment() {
                     </div>
                     <div className='payment__details'>
                         {/* Where the Stripe magic will go */}
+
+                        <form onSubmit={handleSubmit}>
+                            <CardElement onChange={handleChange} />
+
+                            <div className='payment__priceContainer'>
+                                <CurrencyFormat
+                                    renderText={(value) => (
+                                        <h3>Order Total: {value}</h3>
+                                    )}
+                                    decimalScale={2}
+                                    value={getBasketTotal(basket)}
+                                    displayType={"text"}
+                                    thousandSeparator={true}
+                                    prefix={"$"}
+                                />
+                                <button disabled={processing || disabled || succeeded}>
+                                    <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
+                                </button>
+                            </div>
+
+                            {/* Errors */}
+                            {error && <div>{error}</div>}
+                        </form>
                     </div>
                 </div>
             </div>
