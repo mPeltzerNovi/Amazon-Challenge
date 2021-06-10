@@ -43,6 +43,8 @@ function Payment() {
     }, [basket])
     ////
 
+    console.log('THE SECRET IS >>>', clientSecret);
+
     //Hier dan de handleSubmit-functie maken.
     const handleSubmit = async (event) => {
         //Do all the Stripe stuff here...
@@ -56,6 +58,7 @@ function Payment() {
             }
         }).then(({ paymentIntent }) => {
             //paymentIntent = payment conformation
+
 
             setSucceeded(true);
             setError(null)
