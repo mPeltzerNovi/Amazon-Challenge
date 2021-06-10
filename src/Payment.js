@@ -2,13 +2,15 @@ import React, {useEffect, useState} from 'react';
 import './Payment.css';
 import {useStateValue} from "./StateProvider";
 import CheckoutProduct from "./CheckoutProduct"; //(dit is de HOOK)
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import CurrencyFormat from "react-currency-format";
 import { getBasketTotal } from "./reducer";
+import axios from './axios';//als niet werkt deze opnieuw, mogelijk storing met axios.js
 
 function Payment() {
-    const [{ basket, user }, dispatch] = useStateValue()
+    const [{ basket, user }, dispatch] = useStateValue();
+    const history = useHistory();
 
     //Deze Stripe hooks gebruiken:
     const stripe = useStripe();
@@ -23,7 +25,7 @@ function Payment() {
     const [disabled, setDisabled] = useState(true);
 
     /////
-    const [ClientSecret, setClientSecret] = useState(true); //lastig verhaal dit-->6:15:43
+    const [clientSecret, setClientSecret] = useState(true); //lastig verhaal dit-->6:15:43
 
     useEffect(() => {
         //generate the special stripe secret which allows us to charge a customer
