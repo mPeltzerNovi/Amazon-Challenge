@@ -27,9 +27,14 @@ function Payment() {
 
     useEffect(() => {
         //generate the special stripe secret which allows us to charge a customer
-
+        //Verbinding met de endpoint maken. Samenvatting zie 6:25:45!!! (API-calls)
         const getClientSecret = async () => {
-            const response = await axios
+            const response = await axios({
+                method: 'post',
+                //Stripe expects the total in a currencies subunits
+                url: `/payments/create?total=${getBasketTotal(basket) * 100}`
+            });
+            setClientSecret(response.data.clientSecret)
         }
 
         getClientSecret();
@@ -43,8 +48,20 @@ function Payment() {
         setProcessing(true); //knop blokkeert na 1 keer klikken.
 
 
+        const payload = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: elements.getElement(CardElement)
+            }
+        }).then(({ paymentIntent }) => {
+            //paymentIntent = payment conformation
 
-        //const payload = await stripe
+            setSucceeded(true);
+            setError(null)
+            setProcessing(false)
+
+            history.replace('/orders')
+
+        })
 
 
     }
