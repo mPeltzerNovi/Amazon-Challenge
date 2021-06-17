@@ -7,6 +7,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import CurrencyFormat from "react-currency-format";
 import { getBasketTotal } from "./reducer";
 import axios from './axios';//als niet werkt deze opnieuw, mogelijk storing met axios.js
+import { db } from "./firebase";
 
 function Payment() {
     const [{ basket, user }, dispatch] = useStateValue();
@@ -34,7 +35,7 @@ function Payment() {
             const response = await axios({
                 method: 'post',
                 //Stripe expects the total in a currencies subunits
-                url: `/payments/create?total=${getBasketTotal(basket) * 100}`
+                url: `/payments/create?total=${getBasketTotal(basket) * 100}`  //Hier lijkt het niet meer te werken (7:08:43)
             });
             setClientSecret(response.data.clientSecret)
         }
@@ -44,6 +45,7 @@ function Payment() {
     ////
 
     console.log('THE SECRET IS >>>', clientSecret);
+    console.log('persoon: ', user);
 
     //Hier dan de handleSubmit-functie maken.
     const handleSubmit = async (event) => {
@@ -59,6 +61,18 @@ function Payment() {
         }).then(({ paymentIntent }) => {
             //paymentIntent = payment conformation
 
+            //Verder hieonder op 7:24:56 -->Firebase db code
+
+            db
+                .collection('users')
+                .doc(user?.uid)
+                .collection('orders')
+                .doc(paymentIntent.id)
+                .set({
+                    basket: basket,
+                    amount: paymentIntent.amount,
+                    created: paymentIntent.created
+                })
 
             setSucceeded(true);
             setError(null)
